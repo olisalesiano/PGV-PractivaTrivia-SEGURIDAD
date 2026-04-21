@@ -1,0 +1,339 @@
+[
+  {
+    "pregunta": "¿En qué año llegó el hombre a la Luna por primera vez?",
+    "respuesta": "1969"
+  },
+  {
+    "pregunta": "¿Quién pintó la Mona Lisa?",
+    "respuesta": "leonardo da vinci"
+  },
+  {
+    "pregunta": "¿Cuál es el animal terrestre más rápido del mundo?",
+    "respuesta": "guepardo"
+  },
+  {
+    "pregunta": "¿Qué instrumento musical toca Juanes?",
+    "respuesta": "guitarra"
+  },
+  {
+    "pregunta": "¿Cuál es el río más largo del mundo?",
+    "respuesta": "amazonas"
+  },
+  { "pregunta": "¿En qué continente está Egipto?", "respuesta": "africa" },
+  {
+    "pregunta": "¿Cuántos huesos tiene un adulto humano aproximadamente?",
+    "respuesta": "206"
+  },
+  { "pregunta": "¿Quién es el más guapo de 2ºDAM'?", "respuesta": "luis" },
+  { "pregunta": "¿Qué país tiene forma de bota?", "respuesta": "italia" },
+  {
+    "pregunta": "¿Cuál es la montaña más alta de América?",
+    "respuesta": "aconcagua"
+  },
+  {
+    "pregunta": "¿Qué planeta es conocido como el planeta rojo?",
+    "respuesta": "marte"
+  },
+  {
+    "pregunta": "¿En qué deporte se usa un 'birdie'?",
+    "respuesta": "badminton"
+  },
+  {
+    "pregunta": "¿Quién fue el primer presidente de Estados Unidos?",
+    "respuesta": "george washington"
+  },
+  { "pregunta": "¿Cuál es el océano más grande?", "respuesta": "pacifico" },
+  {
+    "pregunta": "¿Qué vitamina produce la piel con la exposición al sol?",
+    "respuesta": "vitamina d"
+  },
+  {
+    "pregunta": "¿Quién interpretó a Jack en 'Titanic'?",
+    "respuesta": "leonardo dicaprio"
+  },
+  {
+    "pregunta": "¿Cuál es el país más poblado del mundo?",
+    "respuesta": "china"
+  },
+  {
+    "pregunta": "¿Qué animal es conocido como el 'rey de la selva'?",
+    "respuesta": "leon"
+  },
+  {
+    "pregunta": "¿En qué año comenzó la Primera Guerra Mundial?",
+    "respuesta": "1914"
+  },
+  {
+    "pregunta": "¿Quién pintó 'La noche estrellada'?",
+    "respuesta": "vincent van gogh"
+  },
+  {
+    "pregunta": "¿Cuál es el metal más abundante en la corteza terrestre?",
+    "respuesta": "aluminio"
+  },
+  {
+    "pregunta": "¿Qué significa 'HTML' en informática?",
+    "respuesta": "hypertext markup language"
+  },
+  { "pregunta": "¿En qué ciudad está la Torre Eiffel?", "respuesta": "paris" },
+  {
+    "pregunta": "¿Quién escribió 'Don Quijote de la Mancha'?",
+    "respuesta": "miguel de cervantes"
+  },
+  {
+    "pregunta": "¿Cuál es el planeta más grande del sistema solar?",
+    "respuesta": "jupiter"
+  },
+  { "pregunta": "¿Qué deporte practica Novak Djokovic?", "respuesta": "tenis" },
+  {
+    "pregunta": "¿Cuál es el país con más premios Nobel de literatura?",
+    "respuesta": "francia"
+  },
+  {
+    "pregunta": "¿Qué gas respiramos principalmente del aire?",
+    "respuesta": "nitrogeno"
+  },
+  { "pregunta": "¿Quién fue la 'Reina del Pop'?", "respuesta": "madonna" },
+  { "pregunta": "¿En qué año cayó el Muro de Berlín?", "respuesta": "1989" },
+  {
+    "pregunta": "¿Cuál es el animal más grande del mundo?",
+    "respuesta": "ballena azul"
+  },
+  {
+    "pregunta": "¿Qué jugador de fútbol tiene más Balones de Oro?",
+    "respuesta": "lionel messi"
+  },
+  {
+    "pregunta": "¿Cuál es el país más pequeño del mundo?",
+    "respuesta": "vaticano"
+  },
+  {
+    "pregunta": "¿Quién escribió 'Romeo y Julieta'?",
+    "respuesta": "william shakespeare"
+  },
+  {
+    "pregunta": "¿Qué instrumento de viento usa caña doble?",
+    "respuesta": "oboe"
+  },
+  { "pregunta": "¿En qué continente está Australia?", "respuesta": "oceania" },
+  {
+    "pregunta": "¿Cuál es el hueso más largo del cuerpo humano?",
+    "respuesta": "femur"
+  },
+  { "pregunta": "¿Quién pintó 'El grito'?", "respuesta": "edvard munch" },
+  { "pregunta": "¿Qué país es famoso por el tango?", "respuesta": "argentina" },
+  { "pregunta": "¿Cuál es el río que pasa por El Cairo?", "respuesta": "nilo" },
+  {
+    "pregunta": "¿Qué científico formuló la teoría de la relatividad?",
+    "respuesta": "albert einstein"
+  },
+  {
+    "pregunta": "¿En qué año se estrenó la primera película de 'Star Wars'?",
+    "respuesta": "1977"
+  },
+  { "pregunta": "¿Cuál es la moneda oficial de México?", "respuesta": "peso" },
+  { "pregunta": "¿Quién cantó 'Thriller'?", "respuesta": "michael jackson" },
+  {
+    "pregunta": "¿Qué país tiene la estatua del Cristo Redentor?",
+    "respuesta": "brasil"
+  },
+  {
+    "pregunta": "¿Cuál es el libro más vendido del mundo (sin contar la Biblia)?",
+    "respuesta": "don quijote de la mancha"
+  },
+  {
+    "pregunta": "¿Qué fenómeno atmosférico es un embudo de aire giratorio?",
+    "respuesta": "tornado"
+  },
+  {
+    "pregunta": "¿Quién escribió 'El Principito'?",
+    "respuesta": "antoine de saint exupery"
+  },
+  {
+    "pregunta": "¿Cuál es el segundo planeta más cercano al Sol?",
+    "respuesta": "venus"
+  },
+  {
+    "pregunta": "¿En qué deporte se usa un 'slap shot'?",
+    "respuesta": "hockey sobre hielo"
+  },
+  { "pregunta": "¿Qué país inventó el papel?", "respuesta": "china" },
+  {
+    "pregunta": "¿Quién fue el primer humano en orbitar la Tierra?",
+    "respuesta": "yuri gagarin"
+  },
+  {
+    "pregunta": "¿Cuál es el felino más grande de América?",
+    "respuesta": "jaguar"
+  },
+  {
+    "pregunta": "¿Qué actriz interpretó a 'Catwoman' en 'Batman Returns'?",
+    "respuesta": "michelle pfeiffer"
+  },
+  {
+    "pregunta": "¿En qué año ganó Colombia su primera Copa América?",
+    "respuesta": "2001"
+  },
+  { "pregunta": "¿Qué banda lideraba Freddie Mercury?", "respuesta": "queen" },
+  {
+    "pregunta": "¿Cuál es el punto más frío de la Tierra?",
+    "respuesta": "antartida"
+  },
+  {
+    "pregunta": "¿Quién inventó la bombilla incandescente práctica?",
+    "respuesta": "thomas edison"
+  },
+  {
+    "pregunta": "¿Qué país es el mayor productor de café?",
+    "respuesta": "brasil"
+  },
+  {
+    "pregunta": "¿Cuál es la película más taquillera de la historia (sin inflación)?",
+    "respuesta": "avatar"
+  },
+  { "pregunta": "¿Qué animal tiene tres corazones?", "respuesta": "pulpo" },
+  {
+    "pregunta": "¿Quién fue el líder de los derechos civiles que dijo 'I have a dream'?",
+    "respuesta": "martin luther king"
+  },
+  { "pregunta": "¿En qué ciudad está el Coliseo romano?", "respuesta": "roma" },
+  {
+    "pregunta": "¿Qué país tiene forma de media luna en su bandera?",
+    "respuesta": "turquia"
+  },
+  {
+    "pregunta": "¿Cuál es el único mamífero que vuela?",
+    "respuesta": "murcielago"
+  },
+  {
+    "pregunta": "¿Quién escribió 'La Metamorfosis'?",
+    "respuesta": "franz kafka"
+  },
+  {
+    "pregunta": "¿Qué gas se usa en los globos para que floten?",
+    "respuesta": "helio"
+  },
+  { "pregunta": "¿En qué año se fundó la ONU?", "respuesta": "1945" },
+  {
+    "pregunta": "¿Qué jugador de baloncesto tiene más anillos de la NBA?",
+    "respuesta": "bill russell"
+  },
+  {
+    "pregunta": "¿Cuál es el desierto más grande del mundo (no polar)?",
+    "respuesta": "sahara"
+  },
+  {
+    "pregunta": "¿Qué cantante es conocida como 'La Reina del Tejano'?",
+    "respuesta": "selena quintanilla"
+  },
+  {
+    "pregunta": "¿Cuál es el animal nacional de Australia?",
+    "respuesta": "canguro"
+  },
+  {
+    "pregunta": "¿Quién dirigió 'Jurassic Park'?",
+    "respuesta": "steven spielberg"
+  },
+  {
+    "pregunta": "¿Qué vitamina se obtiene principalmente de los cítricos?",
+    "respuesta": "vitamina c"
+  },
+  {
+    "pregunta": "¿En qué país se habla el suajili como lengua oficial?",
+    "respuesta": "tanzania"
+  },
+  {
+    "pregunta": "¿Cuál es la montaña más alta de la Tierra?",
+    "respuesta": "everest"
+  },
+  {
+    "pregunta": "¿Qué parte del cuerpo humano se mide para la presión arterial?",
+    "respuesta": "brazo"
+  },
+  { "pregunta": "¿Quién escribió 'La Odisea'?", "respuesta": "homero" },
+  {
+    "pregunta": "¿Qué país tiene la forma más larga (de norte a sur)?",
+    "respuesta": "chile"
+  },
+  {
+    "pregunta": "¿Cuál es el plato típico japonés de arroz y pescado crudo?",
+    "respuesta": "sushi"
+  },
+  {
+    "pregunta": "¿Qué deporte se juega en una cancha con red y una pelota pequeña y hueca?",
+    "respuesta": "tenis"
+  },
+  {
+    "pregunta": "¿Quién fue el primer emperador romano?",
+    "respuesta": "augusto"
+  },
+  {
+    "pregunta": "¿Qué animal es símbolo de la sabiduría en la mitología griega?",
+    "respuesta": "buho"
+  },
+  {
+    "pregunta": "¿Cuál es el país con más volcanes activos?",
+    "respuesta": "indonesia"
+  },
+  {
+    "pregunta": "¿En qué año se inventó el primer teléfono?",
+    "respuesta": "1876"
+  },
+  {
+    "pregunta": "¿Qué fruta tiene estrellas en su corte?",
+    "respuesta": "carambola"
+  },
+  { "pregunta": "¿Quién pintó 'Las meninas'?", "respuesta": "diego velazquez" },
+  {
+    "pregunta": "¿Qué líquido corporal producen las abejas?",
+    "respuesta": "miel"
+  },
+  {
+    "pregunta": "¿Cuál es el país europeo con más costa?",
+    "respuesta": "noruega"
+  },
+  {
+    "pregunta": "¿Qué banda tocó 'Smells Like Teen Spirit'?",
+    "respuesta": "nirvana"
+  },
+  {
+    "pregunta": "¿Quién descubrió la penicilina?",
+    "respuesta": "alexander fleming"
+  },
+  {
+    "pregunta": "¿En qué ciudad está la Puerta de Brandeburgo?",
+    "respuesta": "berlin"
+  },
+  {
+    "pregunta": "¿Qué animal puede regenerar su cola?",
+    "respuesta": "lagartija"
+  },
+  {
+    "pregunta": "¿Cuál es el día más largo del año en el hemisferio norte?",
+    "respuesta": "solsticio de verano"
+  },
+  {
+    "pregunta": "¿Quién escribió 'Fahrenheit 451'?",
+    "respuesta": "ray bradbury"
+  },
+  {
+    "pregunta": "¿Qué deporte usa un 'tee' para colocar la pelota?",
+    "respuesta": "golf"
+  },
+  {
+    "pregunta": "¿Cuál es el metal líquido a temperatura ambiente?",
+    "respuesta": "mercurio"
+  },
+  {
+    "pregunta": "¿En qué año se estrenó la primera película de 'Toy Story'?",
+    "respuesta": "1995"
+  },
+  {
+    "pregunta": "¿Qué país africano tiene las pirámides más famosas?",
+    "respuesta": "egipto"
+  },
+  {
+    "pregunta": "¿Quién fue el primer hombre en pisar el Polo Sur?",
+    "respuesta": "roald amundsen"
+  }
+]
