@@ -15,7 +15,7 @@ public class QuestionLoader {
         List<String[]> questionsList = new ArrayList<>();
 
         try {
-            InputStream is = QuestionLoader.class.getClassLoader().getResourceAsStream("questions.json");
+            InputStream is = QuestionLoader.class.getResourceAsStream("/net/salesianos/resources/questions.json");
             if (is == null) {
                 System.out.println("No se encontró questions.json en resources");
                 return new String[0][0];

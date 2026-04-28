@@ -36,14 +36,6 @@ public class ClientHandler extends Thread {
       System.out.println("Conexión cerrada con cliente " + this.name + ".");
     } catch (IOException ioe) {
       System.out.println("Error con cliente " + this.name + ".");
-    } finally {
-      ServerApp.removeClient(this.name, this.clientOutputStream);
-      try {
-        clientOutputStream.close();
-        clientInputStream.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
     }
   }
 }

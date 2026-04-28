@@ -1,18 +1,68 @@
-## Getting Started
+# 🎯 Trivia Multijugador — Cliente/Servidor con Java Sockets
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Juego de preguntas y respuestas en tiempo real para varios jugadores conectados en red.
 
-## Folder Structure
+---
 
-The workspace contains two folders by default, where:
+## Requisitos
 
-- `src`: the folder to maintain sources
-- `lib`: the folder to maintain dependencies
+- Java 11 o superior
+- Las preguntas deben estar en `src/main/resources/net/salesianos/resources/questions.json`
 
-Meanwhile, the compiled output files will be generated in the `bin` folder by default.
+---
 
-> If you want to customize the folder structure, open `.vscode/settings.json` and update the related settings there.
+## Cómo ejecutar
 
-## Dependency Management
+**1. Arranca el servidor:**
 
-The `JAVA PROJECTS` view allows you to manage your dependencies. More details can be found [here](https://github.com/microsoft/vscode-java-dependency#manage-dependencies).
+```bash
+java net.salesianos.server.ServerApp
+```
+
+**2. Arranca uno o más clientes** (en terminales separados):
+
+```bash
+java net.salesianos.client.ClientApp
+```
+
+**3. Introduce tu nombre de usuario** cuando lo pida.
+
+---
+
+## Cómo jugar
+
+1. Conéctate con al menos 2 jugadores.
+2. Cualquiera escribe `start` para comenzar la partida.
+3. El servidor lanza 5 rondas de preguntas. Tienes 30 segundos por ronda.
+4. Escribe tu respuesta directamente y pulsa Enter.
+5. El primero en acertar se lleva el punto.
+6. Entre rondas hay 15 segundos de chat libre.
+7. Al final se muestra la clasificación. Escribe `start` para jugar otra vez.
+8. Escribe `exit` para salir.
+
+---
+
+## Configuración
+
+| Parámetro           | Valor por defecto | Dónde cambiarlo                  |
+| ------------------- | ----------------- | -------------------------------- |
+| Puerto              | `8082`            | `Constants.java`                 |
+| Rondas              | `5`               | `ServerApp.java` → `MAX_ROUNDS`  |
+| Tiempo por pregunta | `30 seg`          | `ServerApp.java` → `ANSWER_TIME` |
+
+---
+
+## Añadir preguntas
+
+Edita `questions.json` siguiendo este formato:
+
+```json
+[
+  {
+    "pregunta": "¿Tu pregunta aquí?",
+    "respuesta": "tu respuesta"
+  }
+]
+```
+
+Las respuestas no distinguen mayúsculas ni minúsculas.
