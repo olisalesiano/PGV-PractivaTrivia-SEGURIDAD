@@ -28,6 +28,8 @@ public class ClientHandler extends Thread {
           ServerApp.submitAnswer(this.name, message);
         } else if (!ServerApp.gameStarted && message.trim().toLowerCase().equals("start")) {
           ServerApp.attemptStart(this.name);
+        } else if (ServerApp.chatMode) {
+          ServerApp.handleChat(this.name, message);
         }
       }
     } catch (SocketException se) {
