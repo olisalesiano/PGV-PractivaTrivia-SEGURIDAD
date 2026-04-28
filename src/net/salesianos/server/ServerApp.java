@@ -3,20 +3,31 @@ package net.salesianos.server;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import net.salesianos.server.threads.ClientHandler;
 import net.salesianos.utils.Constants;
 import net.salesianos.utils.QuestionLoader;
 
 public class ServerApp {
   private static final int MAX_ROUNDS = 5;
+  private static final int ANSWER_TIME = 30;
   private static final List<DataOutputStream> clientsOutputs = new ArrayList<>();
   private static final List<String> clientNames = new ArrayList<>();
   private static final Map<String, Integer> scores = new HashMap<>();
   public static volatile boolean gameStarted = false;
   public static volatile boolean acceptingAnswers = false;
+  public static volatile boolean chatMode = true;
   private static String currentAnswer = null;
   private static final Object answerLock = new Object();
+  private static String firstCorrectPlayer = null;
 
   private static String[][] questions;
+
+  // Colores ANSI
+  public static final String RED = "\u001B[31m";
+  public static final String BLUE = "\u001B[34m";
+  public static final String YELLOW = "\u001B[33m";
+  public static final String RESET = "\u001B[0m";
+  public static final String GREEN = "\u001B[32m";
 
   public static void main(String[] args) throws IOException {
     questions = QuestionLoader.loadQuestionsFromJson();
@@ -52,8 +63,10 @@ public class ServerApp {
         clientNames.add(name);
         scores.put(name, 0);
         System.out.println(name + " se ha conectado. Jugadores: " + clientNames.size());
+        broadcast("chat", GREEN + name + " se ha unido a la sala." + RESET);
+        broadcast("chat", "Jugadores conectados: " + clientNames.size());
         if (clientNames.size() >= 2 && !gameStarted) {
-          broadcast("Esperando más jugadores... si quieren empezar, escriban 'start'.");
+          broadcast("chat", "Hay " + clientNames.size() + " jugadores. Escriban 'start' para comenzar.");
         }
       }
 
@@ -62,34 +75,25 @@ public class ServerApp {
     }
   }
 
-  static synchronized boolean attemptStart(String name) {
+  public static synchronized boolean attemptStart(String name) {
     if (!gameStarted && clientNames.size() >= 2) {
       gameStarted = true;
-      broadcast("¡Comienza el juego! " + name + " ha iniciado la partida.");
+      chatMode = false;
+      broadcast("system", GREEN + "¡Comienza el juego! " + name + " ha iniciado la partida." + RESET);
       new Thread(ServerApp::gameLoop).start();
       return true;
     } else if (clientNames.size() < 2) {
-      try {
-        for (int i = 0; i < clientNames.size(); i++) {
-          if (clientNames.get(i).equals(name)) {
-            clientsOutputs.get(i).writeUTF("Se necesitan al menos 2 jugadores.");
-            clientsOutputs.get(i).flush();
-            break;
-          }
-        }
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      sendTo(name, "Se necesitan al menos 2 jugadores.");
     }
     return false;
   }
 
-  static void broadcast(String msg) {
+  public static void broadcast(String type, String msg) {
     synchronized (clientsOutputs) {
-      for (DataOutputStream out : clientsOutputs) {
+      for (int i = 0; i < clientsOutputs.size(); i++) {
         try {
-          out.writeUTF(msg);
-          out.flush();
+          clientsOutputs.get(i).writeUTF(type + "|" + msg);
+          clientsOutputs.get(i).flush();
         } catch (IOException e) {
           e.printStackTrace();
         }
@@ -97,26 +101,39 @@ public class ServerApp {
     }
   }
 
-  static void submitAnswer(String name, String answer) {
-    synchronized (answerLock) {
-      if (acceptingAnswers && currentAnswer != null) {
-        if (answer.toLowerCase().equals(currentAnswer.toLowerCase())) {
-          int newScore = scores.get(name) + 1;
-          scores.put(name, newScore);
-          broadcast(name + " ha acertado! Respuesta: " + currentAnswer + " (+1 punto)");
-          acceptingAnswers = false;
-          currentAnswer = null;
-          answerLock.notifyAll();
+  private static void sendTo(String name, String msg) {
+    synchronized (clientsOutputs) {
+      for (int i = 0; i < clientNames.size(); i++) {
+        if (clientNames.get(i).equals(name)) {
+          try {
+            clientsOutputs.get(i).writeUTF("system|" + msg);
+            clientsOutputs.get(i).flush();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+          break;
         }
       }
     }
   }
 
-  static void removeClient(String name, DataOutputStream out) {
-    synchronized (clientsOutputs) {
-      clientsOutputs.remove(out);
-      clientNames.remove(name);
-      scores.remove(name);
+  public static void handleChat(String name, String message) {
+    if (chatMode) {
+      broadcast("chat", name + ": " + message);
+    }
+  }
+
+  public static void submitAnswer(String name, String answer) {
+    synchronized (answerLock) {
+      if (acceptingAnswers && currentAnswer != null) {
+        if (answer.toLowerCase().equals(currentAnswer.toLowerCase())) {
+          if (firstCorrectPlayer == null) {
+            firstCorrectPlayer = name;
+            int newScore = scores.get(name) + 1;
+            scores.put(name, newScore);
+          }
+        }
+      }
     }
   }
 
@@ -125,64 +142,96 @@ public class ServerApp {
     for (int i = 0; i < questions.length; i++)
       indices.add(i);
     Collections.shuffle(indices);
+    scores.replaceAll((k, v) -> 0);
 
-    int roundCount = 0;
-    for (int idx : indices) {
-      if (roundCount >= MAX_ROUNDS)
+    for (int round = 1; round <= MAX_ROUNDS; round++) {
+      if (clientNames.size() < 2) {
+        broadcast("system", RED + "No hay suficientes jugadores. Juego terminado." + RESET);
         break;
-
-      synchronized (clientsOutputs) {
-        if (clientNames.size() < 2) {
-          broadcast("No hay suficientes jugadores. Juego terminado.");
-          break;
-        }
       }
 
-      roundCount++;
-      String q = questions[idx][0];
-      String a = questions[idx][1];
+      int idx = indices.get(round - 1);
+      String question = questions[idx][0];
+      String answer = questions[idx][1];
 
-      broadcast("--- Ronda " + roundCount + " ---");
-      broadcast("Pregunta: " + q);
+      chatMode = false;
+      firstCorrectPlayer = null;
+      broadcast("system", "");
+      broadcast("system", BLUE + "══════ RONDA " + round + " ══════" + RESET);
+      broadcast("question", RED + question + RESET);
+      broadcast("system", "Tienes " + ANSWER_TIME + " segundos para responder.");
 
-      synchronized (answerLock) {
-        acceptingAnswers = true;
-        currentAnswer = a;
+      acceptingAnswers = true;
+      currentAnswer = answer.toLowerCase();
+
+      // Cuenta atrás
+      for (int sec = ANSWER_TIME; sec > 0; sec--) {
+        if (firstCorrectPlayer != null || clientNames.size() < 2)
+          break;
+
+        if (sec == 15) {
+          broadcast("timer", BLUE + "¡Quedan 15 segundos!" + RESET);
+        } else if (sec <= 5) {
+          broadcast("timer", BLUE + String.valueOf(sec) + "..." + RESET);
+        }
+
         try {
-          answerLock.wait(30000);
+          Thread.sleep(1000);
         } catch (InterruptedException e) {
           break;
         }
-
-        if (acceptingAnswers && currentAnswer != null) {
-          broadcast("¡Tiempo! La respuesta era: " + currentAnswer);
-        }
-        acceptingAnswers = false;
       }
 
-      try {
-        Thread.sleep(2000);
-      } catch (InterruptedException e) {
-        break;
+      acceptingAnswers = false;
+
+      if (firstCorrectPlayer != null) {
+        broadcast("system", GREEN + firstCorrectPlayer + " ha acertado! (+1 punto)" + RESET);
+      } else {
+        broadcast("system", RED + "¡Se acabó el tiempo! Nadie acertó." + RESET);
+        broadcast("system", "La respuesta era: " + answer);
+      }
+
+      currentAnswer = null;
+      firstCorrectPlayer = null;
+
+      // Pausa de 15s entre rondas con chat
+      if (round < MAX_ROUNDS) {
+        broadcast("system", "");
+        broadcast("system", GREEN + "15 segundos para la ronda " + (round + 1) + ". ¡Chat abierto!" + RESET);
+        chatMode = true;
+        try {
+          Thread.sleep(15000);
+        } catch (InterruptedException e) {
+          break;
+        }
       }
     }
 
-    gameStarted = false;
-    broadcast("=== JUEGO TERMINADO ===");
-    broadcast("Clasificación final:");
+    // Fin del juego
+    chatMode = false;
+    broadcast("system", "");
+    broadcast("system", GREEN + "=== JUEGO TERMINADO ===" + RESET);
+    broadcast("system", "Clasificación final:");
 
     List<Map.Entry<String, Integer>> sorted = new ArrayList<>(scores.entrySet());
     sorted.sort((e1, e2) -> e2.getValue() - e1.getValue());
 
     int pos = 1;
+    boolean first = true;
     for (Map.Entry<String, Integer> entry : sorted) {
-      broadcast(pos + ". " + entry.getKey() + " - " + entry.getValue() + " puntos");
+      if (first) {
+        broadcast("system",
+            pos + ". " + YELLOW + "🏆 " + entry.getKey() + " - " + entry.getValue() + " puntos 🏆" + RESET);
+        first = false;
+      } else {
+        broadcast("system", pos + ". " + entry.getKey() + " - " + entry.getValue() + " puntos");
+      }
       pos++;
     }
 
-    scores.clear();
-    for (String name : clientNames) {
-      scores.put(name, 0);
-    }
+    gameStarted = false;
+    chatMode = true;
+    broadcast("system", "");
+    broadcast("system", GREEN + "Chat abierto. Escriban 'start' para jugar otra vez." + RESET);
   }
 }
