@@ -3,6 +3,7 @@ package net.salesianos.server;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+import net.salesianos.server.threads.ClientHandler;
 import net.salesianos.utils.Constants;
 import net.salesianos.utils.QuestionLoader;
 
@@ -62,7 +63,7 @@ public class ServerApp {
     }
   }
 
-  static synchronized boolean attemptStart(String name) {
+  public static synchronized boolean attemptStart(String name) {
     if (!gameStarted && clientNames.size() >= 2) {
       gameStarted = true;
       broadcast("¡Comienza el juego! " + name + " ha iniciado la partida.");
@@ -84,7 +85,7 @@ public class ServerApp {
     return false;
   }
 
-  static void broadcast(String msg) {
+  public static void broadcast(String msg) {
     synchronized (clientsOutputs) {
       for (DataOutputStream out : clientsOutputs) {
         try {
@@ -97,7 +98,7 @@ public class ServerApp {
     }
   }
 
-  static void submitAnswer(String name, String answer) {
+  public static void submitAnswer(String name, String answer) {
     synchronized (answerLock) {
       if (acceptingAnswers && currentAnswer != null) {
         if (answer.toLowerCase().equals(currentAnswer.toLowerCase())) {
@@ -112,7 +113,7 @@ public class ServerApp {
     }
   }
 
-  static void removeClient(String name, DataOutputStream out) {
+  public static void removeClient(String name, DataOutputStream out) {
     synchronized (clientsOutputs) {
       clientsOutputs.remove(out);
       clientNames.remove(name);
