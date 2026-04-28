@@ -13,13 +13,32 @@ public class ServerListener extends Thread {
 
   @Override
   public void run() {
+    String blue = "\u001B[34m";
+    String reset = "\u001B[0m";
+
     while (true) {
-      String serverMessage;
       try {
-        serverMessage = this.inputStream.readUTF();
-        System.out.println(serverMessage);
+        String fullMessage = this.inputStream.readUTF();
+        String[] parts = fullMessage.split("\\|", 2);
+        String type = parts[0];
+        String msg = parts[1];
+
+        switch (type) {
+          case "chat":
+          case "system":
+          case "question":
+          case "timer":
+            System.out.println(msg);
+            break;
+        }
+
+        if (type.equals("timer") || type.equals("question")) {
+          System.out.print("-> ");
+        }
+
       } catch (IOException e) {
-        System.out.println("Problema recibiendo mensaje.");
+        System.out.println("Conexión cerrada con el servidor.");
+        break;
       }
     }
   }
