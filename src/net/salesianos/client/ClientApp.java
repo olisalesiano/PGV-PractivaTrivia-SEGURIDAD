@@ -5,9 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
-import java.util.InputMismatchException;
 import java.util.Scanner;
-
 import net.salesianos.client.threads.ServerListener;
 import net.salesianos.utils.Constants;
 
@@ -20,7 +18,6 @@ public class ClientApp {
         Socket socket = new Socket("localhost", Constants.SERVER_PORT);
 
         DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-
         outputStream.writeUTF(name);
         outputStream.flush();
 
@@ -28,22 +25,23 @@ public class ClientApp {
         ServerListener serverListenerThread = new ServerListener(inputStream);
         serverListenerThread.start();
 
-        while (true) {
-            try {
-                System.out.print("-> ");
-                String message = scanner.nextLine();
+        System.out.println("Conectado. Esperando jugadores...");
 
-                if (message.contains("exit")) {
-                    outputStream.close();
-                    inputStream.close();
-                    socket.close();
-                }
-                outputStream.writeUTF(message);
-                outputStream.flush();
-            } catch (InputMismatchException e) {
-                System.out.println("Esto no es un número, crema.");
-                scanner.nextLine();
+        while (true) {
+            if (socket.isClosed())
+                break;
+            System.out.print("-> ");
+            String message = scanner.nextLine();
+
+            if (message.equalsIgnoreCase("exit")) {
+                outputStream.close();
+                inputStream.close();
+                socket.close();
+                break;
             }
+            outputStream.writeUTF(message);
+            outputStream.flush();
         }
+        scanner.close();
     }
 }
