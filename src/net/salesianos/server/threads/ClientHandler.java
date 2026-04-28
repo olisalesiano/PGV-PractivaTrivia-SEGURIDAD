@@ -19,6 +19,13 @@ public class ClientHandler extends Thread {
     this.clientsOutputs = clientsOutputsStream;
   }
 
+  // creo la lista para detectar el número de jugadores conectados para detectar
+  // si son mínimo 2
+  ArrayList<ClientHandler> clientsConnecteds = new ArrayList<>();clientsConnecteds.add(this);if(clientsConnecteds.size()<=1)
+  {
+    clientHandler.wait();
+  }
+
   @Override
   public void run() {
     try {

@@ -10,6 +10,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.util.ArrayList;
 
+import net.salesianos.client.ClientApp;
 import net.salesianos.server.threads.ClientHandler;
 import net.salesianos.utils.Constants;
 
@@ -20,8 +21,9 @@ public class ServerApp {
 
     ArrayList<DataOutputStream> clientsOutputs = new ArrayList<>();
 
+    System.out.println("Esperando jugadores...");
+
     while (true) {
-      System.out.println("Esperando conexión entrante...");
       Socket clientSocket = serverSocket.accept();
 
       DataOutputStream clientOutputStream = new DataOutputStream(
