@@ -4,37 +4,46 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.ArrayList;
+import net.salesianos.server.ServerApp;
 
 public class ClientHandler extends Thread {
 
   private DataInputStream clientInputStream;
+  private DataOutputStream clientOutputStream;
   private String name;
-  private ArrayList<DataOutputStream> clientsOutputs;
 
-  public ClientHandler(DataInputStream clientInputStream, String name,
-      ArrayList<DataOutputStream> clientsOutputsStream) {
+  public ClientHandler(DataInputStream clientInputStream, DataOutputStream clientOutputStream, String name) {
     this.clientInputStream = clientInputStream;
+    this.clientOutputStream = clientOutputStream;
     this.name = name;
-    this.clientsOutputs = clientsOutputsStream;
   }
 
   @Override
   public void run() {
     try {
       while (true) {
-        String receivedMessage = this.name + ": " + clientInputStream.readUTF();
-        System.out.println(receivedMessage);
+        String message = clientInputStream.readUTF();
 
-        for (DataOutputStream dataOutputStream : clientsOutputs) {
-          dataOutputStream.writeUTF(receivedMessage);
-          dataOutputStream.flush();
+        if (ServerApp.gameStarted && ServerApp.acceptingAnswers) {
+          ServerApp.submitAnswer(this.name, message);
+        } else if (!ServerApp.gameStarted && message.trim().toLowerCase().equals("start")) {
+          ServerApp.attemptStart(this.name);
+        } else if (ServerApp.chatMode) {
+          ServerApp.handleChat(this.name, message);
         }
       }
     } catch (SocketException se) {
       System.out.println("Conexión cerrada con cliente " + this.name + ".");
     } catch (IOException ioe) {
-      System.out.println("Input output exception.");
+      System.out.println("Error con cliente " + this.name + ".");
+    } finally {
+      ServerApp.removeClient(this.name, this.clientOutputStream);
+      try {
+        clientOutputStream.close();
+        clientInputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 }
