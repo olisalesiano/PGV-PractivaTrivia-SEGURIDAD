@@ -5,6 +5,7 @@ import java.net.*;
 import java.util.*;
 import net.salesianos.server.threads.ClientHandler;
 import net.salesianos.utils.Constants;
+import net.salesianos.utils.CryptoUtils;
 import net.salesianos.utils.QuestionLoader;
 
 public class ServerApp {
@@ -22,7 +23,6 @@ public class ServerApp {
 
   private static String[][] questions;
 
-  // Colores ANSI
   public static final String RED = "\u001B[31m";
   public static final String BLUE = "\u001B[34m";
   public static final String YELLOW = "\u001B[33m";
@@ -56,7 +56,15 @@ public class ServerApp {
       Socket clientSocket = serverSocket.accept();
       DataOutputStream out = new DataOutputStream(new BufferedOutputStream(clientSocket.getOutputStream()));
       DataInputStream in = new DataInputStream(new BufferedInputStream(clientSocket.getInputStream()));
-      String name = in.readUTF();
+
+      String name;
+      try {
+        name = CryptoUtils.decrypt(in.readUTF());
+      } catch (Exception e) {
+        System.out.println("Error al descifrar nombre del cliente: " + e.getMessage());
+        clientSocket.close();
+        continue;
+      }
 
       synchronized (clientsOutputs) {
         clientsOutputs.add(out);
@@ -92,9 +100,10 @@ public class ServerApp {
     synchronized (clientsOutputs) {
       for (int i = 0; i < clientsOutputs.size(); i++) {
         try {
-          clientsOutputs.get(i).writeUTF(type + "|" + msg);
+          String encrypted = CryptoUtils.encrypt(type + "|" + msg);
+          clientsOutputs.get(i).writeUTF(encrypted);
           clientsOutputs.get(i).flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
           e.printStackTrace();
         }
       }
@@ -106,9 +115,10 @@ public class ServerApp {
       for (int i = 0; i < clientNames.size(); i++) {
         if (clientNames.get(i).equals(name)) {
           try {
-            clientsOutputs.get(i).writeUTF("system|" + msg);
+            String encrypted = CryptoUtils.encrypt("system|" + msg);
+            clientsOutputs.get(i).writeUTF(encrypted);
             clientsOutputs.get(i).flush();
-          } catch (IOException e) {
+          } catch (Exception e) {
             e.printStackTrace();
           }
           break;
@@ -164,7 +174,6 @@ public class ServerApp {
       acceptingAnswers = true;
       currentAnswer = answer.toLowerCase();
 
-      // Cuenta atrás
       for (int sec = ANSWER_TIME; sec > 0; sec--) {
         if (firstCorrectPlayer != null || clientNames.size() < 2)
           break;
@@ -194,7 +203,6 @@ public class ServerApp {
       currentAnswer = null;
       firstCorrectPlayer = null;
 
-      // Pausa de 15s entre rondas con chat
       if (round < MAX_ROUNDS) {
         broadcast("system", "");
         broadcast("system", GREEN + "15 segundos para la ronda " + (round + 1) + ". ¡Chat abierto!" + RESET);
@@ -207,7 +215,6 @@ public class ServerApp {
       }
     }
 
-    // Fin del juego
     chatMode = false;
     broadcast("system", "");
     broadcast("system", GREEN + "=== JUEGO TERMINADO ===" + RESET);
