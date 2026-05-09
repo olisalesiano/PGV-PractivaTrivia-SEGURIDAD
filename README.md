@@ -1,68 +1,84 @@
-# 🎯 Trivia Multijugador — Cliente/Servidor con Java Sockets
+# UD3 – Práctica 2 – Seguridad en mi app cliente/servidor
 
-Juego de preguntas y respuestas en tiempo real para varios jugadores conectados en red.
+Aplicación de trivia multijugador cliente/servidor con comunicación cifrada mediante AES-128.
+
+## Índice
+
+1. [Wireshark antes del cifrado](#1-wireshark-antes-del-cifrado)
+2. [Clase de cifrado CryptoUtils](#2-clase-de-cifrado-cryptoutils)
+3. [Modificaciones en cliente y servidor](#3-modificaciones-en-cliente-y-servidor)
+4. [Wireshark después del cifrado](#4-wireshark-después-del-cifrado)
+5. [Esquema de roles](#5-esquema-de-roles)
 
 ---
 
-## Requisitos
+## 1. Wireshark antes del cifrado
 
-- Java 11 o superior
-- Las preguntas deben estar en `src/main/resources/net/salesianos/resources/questions.json`
+Con Wireshark se capturó el tráfico TCP en el puerto 8082 antes de aplicar cifrado. Como se puede observar, los mensajes intercambiados entre cliente y servidor son completamente legibles (texto plano).
+
+![Wireshark antes del cifrado](docs/doc-imgs/wireshark-before.png)
+
+En la captura se aprecia el nombre de usuario y los mensajes de chat sin ningún tipo de protección, lo que representa una vulnerabilidad grave ante posibles ataques de interceptación (_man-in-the-middle_).
 
 ---
 
-## Cómo ejecutar
+## 2. Clase de cifrado CryptoUtils
 
-**1. Arranca el servidor:**
+Se ha creado la clase `CryptoUtils` en el paquete `net.salesianos.utils` con dos métodos estáticos:
 
-```bash
-java net.salesianos.server.ServerApp
+- `encrypt(String plainText)` → cifra el texto con AES-128 en modo ECB y lo devuelve en Base64.
+- `decrypt(String encryptedText)` → descifra el texto Base64 y devuelve el texto original.
+
+El algoritmo utilizado es **AES/ECB/PKCS5Padding** con una clave de 128 bits (16 bytes).
+
+```java
+public static String encrypt(String plainText) throws Exception {
+    Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+    cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+    byte[] encryptedBytes = cipher.doFinal(plainText.getBytes(StandardCharsets.UTF_8));
+    return Base64.getEncoder().encodeToString(encryptedBytes);
+}
 ```
 
-**2. Arranca uno o más clientes** (en terminales separados):
+---
 
-```bash
-java net.salesianos.client.ClientApp
-```
+## 3. Modificaciones en cliente y servidor
 
-**3. Introduce tu nombre de usuario** cuando lo pida.
+### Servidor (`ServerApp.java`, `ClientHandler.java`)
+
+- Al recibir la conexión de un cliente, el nombre se **descifra** antes de procesarlo.
+- Los métodos `broadcast()` y `sendTo()` **cifran** cada mensaje antes de enviarlo por el socket.
+- `ClientHandler` **descifra** cada mensaje recibido del cliente antes de procesarlo.
+
+### Cliente (`ClientApp.java`, `ServerListener.java`)
+
+- Al conectarse, el nombre de usuario se **cifra** antes de enviarlo.
+- Cada mensaje escrito por el usuario se **cifra** antes de enviarlo al servidor.
+- `ServerListener` **descifra** cada mensaje recibido del servidor antes de mostrarlo.
 
 ---
 
-## Cómo jugar
+## 4. Wireshark después del cifrado
 
-1. Conéctate con al menos 2 jugadores.
-2. Cualquiera escribe `start` para comenzar la partida.
-3. El servidor lanza 5 rondas de preguntas. Tienes 30 segundos por ronda.
-4. Escribe tu respuesta directamente y pulsa Enter.
-5. El primero en acertar se lleva el punto.
-6. Entre rondas hay 15 segundos de chat libre.
-7. Al final se muestra la clasificación. Escribe `start` para jugar otra vez.
-8. Escribe `exit` para salir.
+Tras aplicar el cifrado AES, se volvió a capturar el tráfico con Wireshark. Ahora los datos son completamente ilegibles: se muestran como cadenas Base64 sin ningún significado visible para un atacante.
+
+![Wireshark después del cifrado](docs/doc-imgs/wireshark-after.png)
+
+Los mensajes ya no pueden ser interpretados aunque sean interceptados.
 
 ---
 
-## Configuración
+## 5. Esquema de roles
 
-| Parámetro           | Valor por defecto | Dónde cambiarlo                  |
-| ------------------- | ----------------- | -------------------------------- |
-| Puerto              | `8082`            | `Constants.java`                 |
-| Rondas              | `5`               | `ServerApp.java` → `MAX_ROUNDS`  |
-| Tiempo por pregunta | `30 seg`          | `ServerApp.java` → `ANSWER_TIME` |
+Se ha diseñado un esquema de seguridad basado en roles (RBAC) para una versión escalada de la aplicación.
 
----
+➡️ [Ver esquema completo de roles](docs/ROLES.md)
 
-## Añadir preguntas
+### Resumen de roles
 
-Edita `questions.json` siguiendo este formato:
-
-```json
-[
-  {
-    "pregunta": "¿Tu pregunta aquí?",
-    "respuesta": "tu respuesta"
-  }
-]
-```
-
-Las respuestas no distinguen mayúsculas ni minúsculas.
+| Rol       | Descripción               |
+| --------- | ------------------------- |
+| ADMIN     | Control total del sistema |
+| HOST      | Gestión de partidas       |
+| PLAYER    | Jugador estándar          |
+| SPECTATOR | Solo puede observar       |
