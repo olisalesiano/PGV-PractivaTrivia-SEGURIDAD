@@ -5,6 +5,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.SocketException;
 import net.salesianos.server.ServerApp;
+import net.salesianos.utils.CryptoUtils;
 
 public class ClientHandler extends Thread {
 
@@ -22,7 +23,8 @@ public class ClientHandler extends Thread {
   public void run() {
     try {
       while (true) {
-        String message = clientInputStream.readUTF();
+        String encrypted = clientInputStream.readUTF();
+        String message = CryptoUtils.decrypt(encrypted);
 
         if (ServerApp.gameStarted && ServerApp.acceptingAnswers) {
           ServerApp.submitAnswer(this.name, message);
@@ -36,6 +38,8 @@ public class ClientHandler extends Thread {
       System.out.println("Conexión cerrada con cliente " + this.name + ".");
     } catch (IOException ioe) {
       System.out.println("Error con cliente " + this.name + ".");
+    } catch (Exception e) {
+      System.out.println("Error al descifrar mensaje de " + this.name + ": " + e.getMessage());
     }
   }
 }
