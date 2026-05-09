@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.Scanner;
 import net.salesianos.client.threads.ServerListener;
 import net.salesianos.utils.Constants;
+import net.salesianos.utils.CryptoUtils;
 
 public class ClientApp {
     public static void main(String[] args) throws Exception {
@@ -18,7 +19,7 @@ public class ClientApp {
         Socket socket = new Socket("localhost", Constants.SERVER_PORT);
 
         DataOutputStream outputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
-        outputStream.writeUTF(name);
+        outputStream.writeUTF(CryptoUtils.encrypt(name));
         outputStream.flush();
 
         DataInputStream inputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
@@ -39,7 +40,7 @@ public class ClientApp {
                 socket.close();
                 break;
             }
-            outputStream.writeUTF(message);
+            outputStream.writeUTF(CryptoUtils.encrypt(message));
             outputStream.flush();
         }
         scanner.close();
