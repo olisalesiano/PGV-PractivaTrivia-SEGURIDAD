@@ -2,6 +2,7 @@ package net.salesianos.client.threads;
 
 import java.io.DataInputStream;
 import java.io.IOException;
+import net.salesianos.utils.CryptoUtils;
 
 public class ServerListener extends Thread {
 
@@ -13,12 +14,10 @@ public class ServerListener extends Thread {
 
   @Override
   public void run() {
-    String blue = "\u001B[34m";
-    String reset = "\u001B[0m";
-
     while (true) {
       try {
-        String fullMessage = this.inputStream.readUTF();
+        String encrypted = this.inputStream.readUTF();
+        String fullMessage = CryptoUtils.decrypt(encrypted);
         String[] parts = fullMessage.split("\\|", 2);
         String type = parts[0];
         String msg = parts[1];
@@ -38,6 +37,9 @@ public class ServerListener extends Thread {
 
       } catch (IOException e) {
         System.out.println("Conexión cerrada con el servidor.");
+        break;
+      } catch (Exception e) {
+        System.out.println("Error al descifrar mensaje del servidor: " + e.getMessage());
         break;
       }
     }
